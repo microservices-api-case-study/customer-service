@@ -3,3 +3,7 @@ spring:
         name: customer-service
 server:
   port: 8100
+  
+logging:
+  level:
+    root: INFO
