@@ -1,0 +1,6 @@
+---
+applications:
+- name: customer-service
+  path: ./target/customer-service-1.0.jar
+  buildpacks:
+      - https://github.com/cloudfoundry/java-buildpack.git
