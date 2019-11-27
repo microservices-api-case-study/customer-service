@@ -6,9 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @RestController
 @RequestMapping("/service1")
@@ -36,14 +39,28 @@ public class CustomerServiceController {
 	 * and publishes the same through an event which subscribe by sales-order-service
 	 * @param customer
 	 */
-	@GetMapping("/customer")
-	public void addCustomer(@RequestBody Customer customer) {
+	@PostMapping("/customer")
+	public String addCustomer(@RequestBody Customer customer) {
 		log.info("Adding a new customer...");
+		
 		customerRepository.save(customer);
 		
-		log.info("Publishing a message to notify sales-order-service...");
-		eventPublisher.sendMessage(customer);
+		log.info("Publishing an event to notify sales-order-service...");
 		
-		log.info("Successfully added a new customer.");
+		eventPublisher.publishEvent(customer);
+		
+		log.info("Successfully added a new customer and published 'customer.created' event.");
+		
+		return "Added - "+customer.toString();
+	}
+	
+	@GetMapping("/fault")
+	@HystrixCommand(fallbackMethod="fallbackOnRuntimeException")
+	public String toShowfaultTolerance() {
+		throw new RuntimeException();
+	}
+
+	public String fallbackOnRuntimeException() {
+		return "Fallback method has been executed successfully.";
 	}
 }
