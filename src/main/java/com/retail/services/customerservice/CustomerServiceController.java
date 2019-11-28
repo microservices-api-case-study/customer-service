@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.retail.services.customerservice.model.Customer;
+import com.retail.services.customerservice.mq.EventPublisher;
+import com.retail.services.customerservice.repos.CustomerRepository;
 
 @RestController
 @RequestMapping("/service1")
