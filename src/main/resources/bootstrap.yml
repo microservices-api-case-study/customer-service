@@ -3,3 +3,16 @@ spring:
         name: customer-service
 server:
   port: 8100
+
+---
+
+spring:
+  profiles: junit
+  main:
+    banner-mode: "off"
+  cloud:
+    config:
+      enabled: false
+eureka:
+  client:
+    enabled: false
