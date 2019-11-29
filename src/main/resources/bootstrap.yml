@@ -1,6 +1,6 @@
 spring:
     application:
-        name: customer-service
+        name: anand-customer-service
 server:
   port: 8100
 

@@ -1,6 +1,10 @@
 ---
 applications:
-- name: customer-service
+- name: anand-customer-service
   path: ./target/customer-service-1.0.jar
   buildpacks:
       - https://github.com/cloudfoundry/java-buildpack.git
+  services:
+  - anand-config-server
+  - anand-service-registry
+  - anand-rabbit-mq
