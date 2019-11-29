@@ -16,3 +16,6 @@ spring:
 eureka:
   client:
     enabled: false
+rabbitmq:
+  exchange-name: "eventExchange"
+  routing-key: "customer.created"
