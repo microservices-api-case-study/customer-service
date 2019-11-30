@@ -5,6 +5,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,9 +20,13 @@ import com.retail.services.customerservice.repos.CustomerRepository;
 
 @RestController
 @RequestMapping("/service1")
+@RefreshScope
 public class CustomerServiceController {
 	
 	private static final Logger log = LoggerFactory.getLogger(CustomerServiceController.class);
+	
+	@Value("${app.custom.message}")
+	String message;
 	
 	@Autowired
 	CustomerRepository customerRepository;
@@ -34,6 +40,7 @@ public class CustomerServiceController {
 	 */
 	@GetMapping("/customers")
 	public List<Customer> getAllCustomers(){
+		log.info(message);
 		return customerRepository.findAll();
 	}
 
