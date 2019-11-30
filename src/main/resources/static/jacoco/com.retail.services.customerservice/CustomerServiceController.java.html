@@ -2,9 +2,13 @@
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,9 +22,13 @@ import com.retail.services.customerservice.repos.CustomerRepository;
 
 @RestController
 @RequestMapping(&quot;/service1&quot;)
-<span class="fc" id="L21">public class CustomerServiceController {</span>
+@RefreshScope
+<span class="fc" id="L26">public class CustomerServiceController {</span>
 	
-<span class="fc" id="L23">	private static final Logger log = LoggerFactory.getLogger(CustomerServiceController.class);</span>
+<span class="fc" id="L28">	private static final Logger log = LoggerFactory.getLogger(CustomerServiceController.class);</span>
+	
+	@Value(&quot;${app.custom.message}&quot;)
+	String message;
 	
 	@Autowired
 	CustomerRepository customerRepository;
@@ -34,7 +42,8 @@ import com.retail.services.customerservice.repos.CustomerRepository;
 	 */
 	@GetMapping(&quot;/customers&quot;)
 	public List&lt;Customer&gt; getAllCustomers(){
-<span class="fc" id="L37">		return customerRepository.findAll();</span>
+<span class="fc" id="L45">		log.info(message);</span>
+<span class="fc" id="L46">		return customerRepository.findAll();</span>
 	}
 
 	/**
@@ -43,28 +52,28 @@ import com.retail.services.customerservice.repos.CustomerRepository;
 	 * @param customer
 	 */
 	@PostMapping(&quot;/customer&quot;)
-	public String addCustomer(@RequestBody Customer customer) {
-<span class="fc" id="L47">		log.info(&quot;Adding a new customer...&quot;);</span>
+	public String addCustomer(@Valid @RequestBody Customer customer) {
+<span class="fc" id="L56">		log.info(&quot;Adding a new customer...&quot;);</span>
 		
-<span class="fc" id="L49">		customerRepository.save(customer);</span>
+<span class="fc" id="L58">		customerRepository.save(customer);</span>
 		
-<span class="fc" id="L51">		log.info(&quot;Publishing an event to notify sales-order-service...&quot;);</span>
+<span class="fc" id="L60">		log.info(&quot;Publishing an event to notify sales-order-service...&quot;);</span>
 		
-<span class="fc" id="L53">		eventPublisher.publishEvent(customer);</span>
+<span class="fc" id="L62">		eventPublisher.publishEvent(customer);</span>
 		
-<span class="fc" id="L55">		log.info(&quot;Successfully added a new customer and published 'customer.created' event.&quot;);</span>
+<span class="fc" id="L64">		log.info(&quot;Successfully added a new customer and published 'customer.created' event.&quot;);</span>
 		
-<span class="fc" id="L57">		return &quot;Added - &quot;+customer.toString();</span>
+<span class="fc" id="L66">		return &quot;Added - &quot;+customer.toString();</span>
 	}
 	
 	@GetMapping(&quot;/fault&quot;)
 	@HystrixCommand(fallbackMethod=&quot;fallbackOnRuntimeException&quot;)
 	public String toShowfaultTolerance() {
-<span class="fc" id="L63">		throw new RuntimeException();</span>
+<span class="fc" id="L72">		throw new RuntimeException();</span>
 	}
 
 	public String fallbackOnRuntimeException() {
-<span class="fc" id="L67">		return &quot;Fallback method has been executed successfully.&quot;;</span>
+<span class="fc" id="L76">		return &quot;Fallback method has been executed successfully.&quot;;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>
