@@ -3,6 +3,11 @@ spring:
         name: anand-customer-service
 server:
   port: 8100
+  
+app:
+  security:
+    basic:
+      enabled: false
 
 ---
 
