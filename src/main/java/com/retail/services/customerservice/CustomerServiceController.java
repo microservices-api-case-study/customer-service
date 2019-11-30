@@ -2,6 +2,8 @@ package com.retail.services.customerservice;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +52,7 @@ public class CustomerServiceController {
 	 * @param customer
 	 */
 	@PostMapping("/customer")
-	public String addCustomer(@RequestBody Customer customer) {
+	public String addCustomer(@Valid @RequestBody Customer customer) {
 		log.info("Adding a new customer...");
 		
 		customerRepository.save(customer);
