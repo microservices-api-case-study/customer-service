@@ -145,6 +145,8 @@
 				<configuration>
 					<excludes>
 						<exclude>**/*Application.*</exclude>
+						<exclude>**/*Error.*</exclude>
+						<exclude>**/*Exception*.*</exclude>
 						<exclude>**/*model/*</exclude>
 					</excludes>
 				</configuration>
@@ -174,6 +176,8 @@
 									<element>CLASS</element>
 									<excludes>
 										<exclude>**/*Application.*</exclude>
+										<exclude>**/*Error.*</exclude>
+										<exclude>**/*Exception*.*</exclude>
 										<exclude>**/*model/*</exclude>
 									</excludes>
 									<limits>

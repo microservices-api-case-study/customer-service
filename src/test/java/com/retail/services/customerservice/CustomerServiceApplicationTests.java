@@ -46,6 +46,7 @@ class CustomerServiceApplicationTests {
 	void testAddCustomer() {
 
 		Customer customer = new Customer();
+		customer.setEmail("abc@def.com");
 		customer.setFirstName("John");
 		customer.setLastName("Smith");
 		ResponseEntity<String> response = testRestTemplate.postForEntity(URL_PREFIX + port + "/service1/customer",
