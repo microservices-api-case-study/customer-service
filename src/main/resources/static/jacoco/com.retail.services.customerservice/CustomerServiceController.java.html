@@ -20,60 +20,66 @@ import com.retail.services.customerservice.model.Customer;
 import com.retail.services.customerservice.mq.EventPublisher;
 import com.retail.services.customerservice.repos.CustomerRepository;
 
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
 @RequestMapping(&quot;/service1&quot;)
 @RefreshScope
-<span class="fc" id="L26">public class CustomerServiceController {</span>
-	
-<span class="fc" id="L28">	private static final Logger log = LoggerFactory.getLogger(CustomerServiceController.class);</span>
-	
+<span class="fc" id="L29">public class CustomerServiceController {</span>
+
+<span class="fc" id="L31">	private static final Logger log = LoggerFactory.getLogger(CustomerServiceController.class);</span>
+
 	@Value(&quot;${app.custom.message}&quot;)
 	String message;
-	
+
 	@Autowired
 	CustomerRepository customerRepository;
 
 	@Autowired
 	EventPublisher eventPublisher;
-	
+
 	/**
 	 * This operation returns the details of all the Customers
+	 * 
 	 * @return List&lt;Customer&gt;
 	 */
 	@GetMapping(&quot;/customers&quot;)
-	public List&lt;Customer&gt; getAllCustomers(){
-<span class="fc" id="L45">		log.info(message);</span>
-<span class="fc" id="L46">		return customerRepository.findAll();</span>
+	public List&lt;Customer&gt; getAllCustomers() {
+<span class="fc" id="L49">		log.info(message);</span>
+<span class="fc" id="L50">		return customerRepository.findAll();</span>
 	}
 
 	/**
-	 * This operation persists the given Customer details in H2 DB
-	 * and publishes the same through an event which subscribe by sales-order-service
+	 * This operation persists the given Customer details in H2 DB and publishes the
+	 * same through an event which subscribe by sales-order-service
+	 * 
 	 * @param customer
 	 */
 	@PostMapping(&quot;/customer&quot;)
+	@ApiResponses(value = { @ApiResponse(code = 400, message = &quot;Invalid request format&quot;) })
 	public String addCustomer(@Valid @RequestBody Customer customer) {
-<span class="fc" id="L56">		log.info(&quot;Adding a new customer...&quot;);</span>
-		
-<span class="fc" id="L58">		customerRepository.save(customer);</span>
-		
-<span class="fc" id="L60">		log.info(&quot;Publishing an event to notify sales-order-service...&quot;);</span>
-		
-<span class="fc" id="L62">		eventPublisher.publishEvent(customer);</span>
-		
-<span class="fc" id="L64">		log.info(&quot;Successfully added a new customer and published 'customer.created' event.&quot;);</span>
-		
-<span class="fc" id="L66">		return &quot;Added - &quot;+customer.toString();</span>
+<span class="fc" id="L62">		log.info(&quot;Adding a new customer...&quot;);</span>
+
+<span class="fc" id="L64">		customerRepository.save(customer);</span>
+
+<span class="fc" id="L66">		log.info(&quot;Publishing an event to notify sales-order-service...&quot;);</span>
+
+<span class="fc" id="L68">		eventPublisher.publishEvent(customer);</span>
+
+<span class="fc" id="L70">		log.info(&quot;Successfully added a new customer and published 'customer.created' event.&quot;);</span>
+
+<span class="fc" id="L72">		return &quot;Added - &quot; + customer.toString();</span>
 	}
-	
+
 	@GetMapping(&quot;/fault&quot;)
-	@HystrixCommand(fallbackMethod=&quot;fallbackOnRuntimeException&quot;)
+	@HystrixCommand(fallbackMethod = &quot;fallbackOnRuntimeException&quot;)
 	public String toShowfaultTolerance() {
-<span class="fc" id="L72">		throw new RuntimeException();</span>
+<span class="fc" id="L78">		throw new RuntimeException();</span>
 	}
 
 	public String fallbackOnRuntimeException() {
-<span class="fc" id="L76">		return &quot;Fallback method has been executed successfully.&quot;;</span>
+<span class="fc" id="L82">		return &quot;Fallback method has been executed successfully.&quot;;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>
