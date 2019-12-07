@@ -20,54 +20,60 @@ import com.retail.services.customerservice.model.Customer;
 import com.retail.services.customerservice.mq.EventPublisher;
 import com.retail.services.customerservice.repos.CustomerRepository;
 
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
 @RequestMapping("/service1")
 @RefreshScope
 public class CustomerServiceController {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(CustomerServiceController.class);
-	
+
 	@Value("${app.custom.message}")
 	String message;
-	
+
 	@Autowired
 	CustomerRepository customerRepository;
 
 	@Autowired
 	EventPublisher eventPublisher;
-	
+
 	/**
 	 * This operation returns the details of all the Customers
+	 * 
 	 * @return List<Customer>
 	 */
 	@GetMapping("/customers")
-	public List<Customer> getAllCustomers(){
+	public List<Customer> getAllCustomers() {
 		log.info(message);
 		return customerRepository.findAll();
 	}
 
 	/**
-	 * This operation persists the given Customer details in H2 DB
-	 * and publishes the same through an event which subscribe by sales-order-service
+	 * This operation persists the given Customer details in H2 DB and publishes the
+	 * same through an event which subscribe by sales-order-service
+	 * 
 	 * @param customer
 	 */
 	@PostMapping("/customer")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Invalid request format") })
 	public String addCustomer(@Valid @RequestBody Customer customer) {
 		log.info("Adding a new customer...");
-		
+
 		customerRepository.save(customer);
-		
+
 		log.info("Publishing an event to notify sales-order-service...");
-		
+
 		eventPublisher.publishEvent(customer);
-		
+
 		log.info("Successfully added a new customer and published 'customer.created' event.");
-		
-		return "Added - "+customer.toString();
+
+		return "Added - " + customer.toString();
 	}
-	
+
 	@GetMapping("/fault")
-	@HystrixCommand(fallbackMethod="fallbackOnRuntimeException")
+	@HystrixCommand(fallbackMethod = "fallbackOnRuntimeException")
 	public String toShowfaultTolerance() {
 		throw new RuntimeException();
 	}
