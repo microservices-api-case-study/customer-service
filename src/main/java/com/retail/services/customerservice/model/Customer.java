@@ -5,6 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Customer {
@@ -14,12 +17,19 @@ public class Customer {
 	@Column(name = "id")
 	private Long id;
 
+	@NotNull(message = "Email is required")
+	@NotBlank(message = "Email cannot be empty")
+	@Email(message = "Email is not valid")
 	@Column(name = "email")
 	private String email;
 
+	@NotNull(message = "First name is required")
+	@NotBlank(message = "First name cannot be empty")
 	@Column(name = "first_name")
 	private String firstName;
 
+	@NotNull(message = "Last name is required")
+	@NotBlank(message = "Last Name cannot be empty")
 	@Column(name = "last_name")
 	private String lastName;
 
